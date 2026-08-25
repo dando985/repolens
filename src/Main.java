@@ -6,9 +6,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Path repositoryPath = Path.of("sample-project")
-                .toAbsolutePath()
-                .normalize();
+        Path repositoryPath = Path.of("sample-project").toAbsolutePath().normalize();
 
         System.out.println("Scanning: " + repositoryPath);
 
@@ -20,13 +18,10 @@ public class Main {
         RepositoryScanner scanner = new RepositoryScanner();
 
         try {
-            List<JavaSourceFile> sourceFiles =
-                    scanner.scan(repositoryPath);
+            List<JavaSourceFile> sourceFiles = scanner.scan(repositoryPath);
 
             System.out.println();
-            System.out.println(
-                    "Indexed " + sourceFiles.size() + " Java file(s)."
-            );
+            System.out.println("Indexed " + sourceFiles.size() + " Java file(s).");
 
             for (JavaSourceFile sourceFile : sourceFiles) {
                 System.out.println();

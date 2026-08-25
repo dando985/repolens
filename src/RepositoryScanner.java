@@ -19,14 +19,10 @@ public class RepositoryScanner {
 
             for (Path javaFilePath : javaFilePaths) {
                 String content = Files.readString(javaFilePath);
-
-                JavaSourceFile sourceFile =
-                        new JavaSourceFile(javaFilePath, content);
-
+                JavaSourceFile sourceFile = new JavaSourceFile(javaFilePath, content);
                 sourceFiles.add(sourceFile);
             }
         }
-
         return sourceFiles;
     }
 }
