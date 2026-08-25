@@ -8,21 +8,13 @@ public class CodeChunker {
 
         String[] lines = sourceFile.getContent().split("\\R");
 
-        for (int startIndex = 0;
-             startIndex < lines.length;
-             startIndex += linesPerChunk) {
+        for (int startIndex = 0; startIndex < lines.length; startIndex += linesPerChunk) {
 
-            int endIndex = Math.min(
-                    startIndex + linesPerChunk,
-                    lines.length
-            );
+            int endIndex = Math.min(startIndex + linesPerChunk, lines.length);
 
             StringBuilder chunkContent = new StringBuilder();
 
-            for (int lineIndex = startIndex;
-                 lineIndex < endIndex;
-                 lineIndex++) {
-
+            for (int lineIndex = startIndex; lineIndex < endIndex; lineIndex++) {
                 chunkContent.append(lines[lineIndex]);
 
                 if (lineIndex < endIndex - 1) {
