@@ -24,7 +24,7 @@ public class Main {
             List<CodeChunk> allChunks = new ArrayList<>();
 
             for (JavaSourceFile sourceFile : sourceFiles) {
-                List<CodeChunk> fileChunks = chunker.createChunks(sourceFile, 5);
+                List<CodeChunk> fileChunks = chunker.createChunks(sourceFile);
                 allChunks.addAll(fileChunks);
             }
 

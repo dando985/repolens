@@ -1,31 +1,36 @@
+import com.github.javaparser.Range;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CodeChunker {
 
-    public List<CodeChunk> createChunks(JavaSourceFile sourceFile, int linesPerChunk) {
+    public List<CodeChunk> createChunks(JavaSourceFile sourceFile) throws IOException {
         List<CodeChunk> chunks = new ArrayList<>();
-        String[] lines = sourceFile.getContent().split("\\R");
+        CompilationUnit compilationUnit = StaticJavaParser.parse(sourceFile.getPath());
+        List<MethodDeclaration> methods = compilationUnit.findAll(MethodDeclaration.class);
 
-        for (int startIndex = 0; startIndex < lines.length; startIndex += linesPerChunk) {
-            int endIndex = Math.min(startIndex + linesPerChunk, lines.length);
-            StringBuilder chunkContent = new StringBuilder();
-
-            for (int lineIndex = startIndex; lineIndex < endIndex; lineIndex++) {
-                chunkContent.append(lines[lineIndex]);
-                if (lineIndex < endIndex - 1) {
-                    chunkContent.append(System.lineSeparator());
-                }
+        for (MethodDeclaration method : methods) {
+            if (method.getRange().isEmpty()) {
+                continue;
             }
+
+            Range range = method.getRange().get();
 
             CodeChunk chunk = new CodeChunk(
                     sourceFile.getPath(),
-                    startIndex + 1,
-                    endIndex,
-                    chunkContent.toString()
+                    range.begin.line,
+                    range.end.line,
+                    method.toString()
             );
+
             chunks.add(chunk);
         }
+
         return chunks;
     }
 }
