@@ -7,9 +7,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        Path repositoryPath = Path.of("sample-project")
-                .toAbsolutePath()
-                .normalize();
+        Path repositoryPath = Path.of("sample-project").toAbsolutePath().normalize();
 
         System.out.println("Scanning: " + repositoryPath);
 
@@ -22,15 +20,11 @@ public class Main {
         CodeChunker chunker = new CodeChunker();
 
         try {
-            List<JavaSourceFile> sourceFiles =
-                    scanner.scan(repositoryPath);
-
+            List<JavaSourceFile> sourceFiles = scanner.scan(repositoryPath);
             List<CodeChunk> allChunks = new ArrayList<>();
 
             for (JavaSourceFile sourceFile : sourceFiles) {
-                List<CodeChunk> fileChunks =
-                        chunker.createChunks(sourceFile, 5);
-
+                List<CodeChunk> fileChunks = chunker.createChunks(sourceFile, 5);
                 allChunks.addAll(fileChunks);
             }
 
