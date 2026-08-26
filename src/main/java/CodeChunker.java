@@ -1,6 +1,7 @@
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import java.io.IOException;
@@ -20,9 +21,16 @@ public class CodeChunker {
             }
 
             Range range = method.getRange().get();
+            String methodName = method.getNameAsString();
+            String className = method
+                    .findAncestor(ClassOrInterfaceDeclaration.class)
+                    .map(ClassOrInterfaceDeclaration::getNameAsString)
+                    .orElse("UnknownClass");
 
             CodeChunk chunk = new CodeChunk(
                     sourceFile.getPath(),
+                    className,
+                    methodName,
                     range.begin.line,
                     range.end.line,
                     method.toString()

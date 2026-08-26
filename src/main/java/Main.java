@@ -40,7 +40,9 @@ public class Main {
             for (CodeChunk chunk : allChunks) {
                 System.out.println();
                 System.out.println("------------------------------");
-                System.out.println("File: " + chunk.getFilePath());
+                System.out.println("File: " + chunk.getFilePath().getFileName());
+                System.out.println("Class: " + chunk.getClassName());
+                System.out.println("Method: " + chunk.getMethodName());
                 System.out.println(
                         "Lines: "
                                 + chunk.getStartLine()
