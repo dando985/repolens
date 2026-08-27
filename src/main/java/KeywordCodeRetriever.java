@@ -3,8 +3,9 @@ import java.util.List;
 import java.util.Locale;
 
 // Searches code chunks and grades their relevance based on an input search query
-public class CodeSearchService {
+public class KeywordCodeRetriever implements CodeRetriever {
 
+    @Override
     public List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery) {
         List<SearchResult> results = new ArrayList<>();
 

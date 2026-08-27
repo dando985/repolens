@@ -18,7 +18,7 @@ public class Main {
 
         RepositoryScanner scanner = new RepositoryScanner();
         CodeChunker chunker = new CodeChunker();
-        CodeSearchService searchService = new CodeSearchService();
+        CodeRetriever retriever = new KeywordCodeRetriever();
 
         try {
             // Scans repository path for a list of Java source files
@@ -53,7 +53,7 @@ public class Main {
             // Defines query object and limits number of search results
             SearchQuery searchQuery = new SearchQuery(query, 3);
             // Get list of relevant search results in descending score order (most to least relevant)
-            List<SearchResult> results = searchService.search(allChunks, searchQuery);
+            List<SearchResult> results = retriever.search(allChunks, searchQuery);
 
             printResults(results);
         } catch (IOException exception) {

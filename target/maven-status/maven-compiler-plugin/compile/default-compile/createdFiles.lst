@@ -1,8 +1,9 @@
 JavaSourceFile.class
 Main.class
+CodeRetriever.class
 RepositoryScanner.class
+KeywordCodeRetriever.class
 CodeChunker.class
 SearchResult.class
 SearchQuery.class
 CodeChunk.class
-CodeSearchService.class
