@@ -44,7 +44,13 @@ public class Main {
             System.out.print("Enter a search query: ");
             String query = console.nextLine();
 
-            List<SearchResult> results = searchService.search(allChunks, query);
+            if (query.isBlank()) {
+                System.out.println("Please enter at least one search word.");
+                return;
+            }
+
+            int maxResults = 3;
+            List<SearchResult> results = searchService.search(allChunks, query, maxResults);
             printResults(results);
         } catch (IOException exception) {
             System.out.println("Unable to scan the repository.");
