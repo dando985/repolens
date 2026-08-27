@@ -21,7 +21,7 @@ public class KeywordCodeRetriever implements CodeRetriever {
         }
 
         // Sorts relevant code chunks by their score in descending order
-        results.sort((first, second) -> Integer.compare(second.getScore(), first.getScore()));
+        results.sort((first, second) -> Double.compare(second.getScore(), first.getScore()));
         // Determine result count based on result size or a set max result size (whichever is lower)
         int resultCount = Math.min(results.size(), searchQuery.getMaxResults());
 

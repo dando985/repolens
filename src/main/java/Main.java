@@ -75,7 +75,7 @@ public class Main {
             CodeChunk chunk = result.getChunk();
             System.out.println();
             System.out.println("------------------------------");
-            System.out.println("Score: " + result.getScore());
+            System.out.printf("Score: %.3f%n", result.getScore());
             System.out.println("File: " + chunk.getFilePath().getFileName());
             System.out.println("Class: " + chunk.getClassName());
             System.out.println("Method: " + chunk.getMethodName());
