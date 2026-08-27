@@ -76,7 +76,6 @@ public class Main {
             System.out.println();
             System.out.println("------------------------------");
             System.out.println("Score: " + result.getScore());
-
             System.out.println("File: " + chunk.getFilePath().getFileName());
             System.out.println("Class: " + chunk.getClassName());
             System.out.println("Method: " + chunk.getMethodName());
