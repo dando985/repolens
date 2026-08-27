@@ -10,8 +10,11 @@ import java.util.List;
 
 public class CodeChunker {
 
+    // Creates a list of code chunks from a source file
     public List<CodeChunk> createChunks(JavaSourceFile sourceFile) throws IOException {
         List<CodeChunk> chunks = new ArrayList<>();
+
+        // Parse source file and create list of its methods
         CompilationUnit compilationUnit = StaticJavaParser.parse(sourceFile.getPath());
         List<MethodDeclaration> methods = compilationUnit.findAll(MethodDeclaration.class);
 
@@ -19,9 +22,11 @@ public class CodeChunker {
             if (method.getRange().isEmpty()) {
                 continue;
             }
-
+            // Determine length of the method
             Range range = method.getRange().get();
+            // Get method name
             String methodName = method.getNameAsString();
+            // Find the class belonging to the method
             String className = method
                     .findAncestor(ClassOrInterfaceDeclaration.class)
                     .map(ClassOrInterfaceDeclaration::getNameAsString)

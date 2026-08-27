@@ -8,10 +8,9 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        // Define path of repository
         Path repositoryPath = Path.of("sample-project").toAbsolutePath().normalize();
-
         System.out.println("Scanning: " + repositoryPath);
-
         if (!Files.exists(repositoryPath)) {
             System.out.println("Repository folder was not found.");
             return;
@@ -22,9 +21,11 @@ public class Main {
         CodeSearchService searchService = new CodeSearchService();
 
         try {
+            // Scans repository path for a list of Java source files
             List<JavaSourceFile> sourceFiles = scanner.scan(repositoryPath);
             List<CodeChunk> allChunks = new ArrayList<>();
 
+            // Adds code chunks from all source files to a single list
             for (JavaSourceFile sourceFile : sourceFiles) {
                 List<CodeChunk> fileChunks = chunker.createChunks(sourceFile);
                 allChunks.addAll(fileChunks);
@@ -39,6 +40,7 @@ public class Main {
                     "Created " + allChunks.size() + " code chunk(s)."
             );
 
+            // Take user's query input
             Scanner console = new Scanner(System.in);
             System.out.println();
             System.out.print("Enter a search query: ");
@@ -48,7 +50,9 @@ public class Main {
                 return;
             }
 
+            // Defines query object and limits number of search results
             SearchQuery searchQuery = new SearchQuery(query, 3);
+            // Get list of relevant search results in descending score order (most to least relevant)
             List<SearchResult> results = searchService.search(allChunks, searchQuery);
 
             printResults(results);

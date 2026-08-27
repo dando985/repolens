@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 public class RepositoryScanner {
 
+    // Searches repository path and creates a list of Java files that holds their file path and contents
     public List<JavaSourceFile> scan(Path repositoryPath) throws IOException {
 
         List<JavaSourceFile> sourceFiles = new ArrayList<>();

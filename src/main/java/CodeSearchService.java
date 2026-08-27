@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+// Searches code chunks and grades their relevance based on an input search query
 public class CodeSearchService {
 
     public List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery) {
@@ -9,6 +10,7 @@ public class CodeSearchService {
 
         String[] keywords = searchQuery.getText().toLowerCase(Locale.ROOT).trim().split("\\s+");
 
+        // Score each code chunk by their relevance
         for (CodeChunk chunk : chunks) {
             int score = calculateScore(chunk, keywords);
 
@@ -17,12 +19,20 @@ public class CodeSearchService {
             }
         }
 
+        // Sorts relevant code chunks by their score in descending order
         results.sort((first, second) -> Integer.compare(second.getScore(), first.getScore()));
+        // Determine result count based on result size or a set max result size (whichever is lower)
         int resultCount = Math.min(results.size(), searchQuery.getMaxResults());
 
         return new ArrayList<>(results.subList(0, resultCount));
     }
 
+    /**
+     * Calculate score of code chunk by its matching to keywords
+     * Methods = +3 points
+     * Class = +2 points
+     * Body = +1 point
+      */
     private int calculateScore(CodeChunk chunk, String[] keywords) {
         int score = 0;
 
