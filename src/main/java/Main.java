@@ -80,12 +80,7 @@ public class Main {
             System.out.println("File: " + chunk.getFilePath().getFileName());
             System.out.println("Class: " + chunk.getClassName());
             System.out.println("Method: " + chunk.getMethodName());
-            System.out.println(
-                    "Lines: "
-                            + chunk.getStartLine()
-                            + "-"
-                            + chunk.getEndLine()
-            );
+            System.out.println("Lines: " + chunk.getStartLine() + "-" + chunk.getEndLine());
             System.out.println("------------------------------");
             System.out.println(chunk.getContent());
         }
