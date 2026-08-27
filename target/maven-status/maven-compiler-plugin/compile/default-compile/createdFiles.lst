@@ -3,5 +3,6 @@ Main.class
 RepositoryScanner.class
 CodeChunker.class
 SearchResult.class
+SearchQuery.class
 CodeChunk.class
 CodeSearchService.class

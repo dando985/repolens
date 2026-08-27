@@ -4,18 +4,10 @@ import java.util.Locale;
 
 public class CodeSearchService {
 
-    public List<SearchResult> search(List<CodeChunk> chunks, String query, int maxResults) {
-        if (query == null || query.isBlank()) {
-            return new ArrayList<>();
-        }
-
-        if (maxResults < 1) {
-            return new ArrayList<>();
-        }
-
+    public List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery) {
         List<SearchResult> results = new ArrayList<>();
 
-        String[] keywords = query.toLowerCase(Locale.ROOT).trim().split("\\s+");
+        String[] keywords = searchQuery.getText().toLowerCase(Locale.ROOT).trim().split("\\s+");
 
         for (CodeChunk chunk : chunks) {
             int score = calculateScore(chunk, keywords);
@@ -26,7 +18,7 @@ public class CodeSearchService {
         }
 
         results.sort((first, second) -> Integer.compare(second.getScore(), first.getScore()));
-        int resultCount = Math.min(results.size(), maxResults);
+        int resultCount = Math.min(results.size(), searchQuery.getMaxResults());
 
         return new ArrayList<>(results.subList(0, resultCount));
     }
