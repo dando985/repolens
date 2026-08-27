@@ -28,7 +28,7 @@ public class KeywordCodeRetriever implements CodeRetriever {
         return new ArrayList<>(results.subList(0, resultCount));
     }
 
-    /**
+    /*
      * Calculate score of code chunk by its matching to keywords
      * Methods = +3 points
      * Class = +2 points
