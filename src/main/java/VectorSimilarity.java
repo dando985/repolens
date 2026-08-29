@@ -1,3 +1,4 @@
+// Compares two vectors and returns cosine similarity
 public final class VectorSimilarity {
 
     private VectorSimilarity() {
