@@ -20,6 +20,7 @@ public final class VectorSimilarity {
         double firstMagnitudeSquared = 0.0;
         double secondMagnitudeSquared = 0.0;
 
+        // Calculate dot product and vector magnitudes squared for each vector
         for (int index = 0; index < firstVector.length; index++) {
             dotProduct += firstVector[index] * secondVector[index];
 
@@ -27,12 +28,15 @@ public final class VectorSimilarity {
             secondMagnitudeSquared += secondVector[index] * secondVector[index];
         }
 
+        // Handle zero vectors to avoid dividing by zero
         if (firstMagnitudeSquared == 0.0 || secondMagnitudeSquared == 0.0) {
             return 0.0;
         }
 
+        // Calculate vector magnitude
         double magnitudeProduct = Math.sqrt(firstMagnitudeSquared) * Math.sqrt(secondMagnitudeSquared);
 
+        // Calculate and return cosine similarity
         return dotProduct / magnitudeProduct;
     }
 }
