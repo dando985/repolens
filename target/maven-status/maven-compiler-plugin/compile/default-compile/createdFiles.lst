@@ -1,9 +1,15 @@
 JavaSourceFile.class
-Main.class
+EmbeddingDemo.class
 CodeRetriever.class
-RepositoryScanner.class
+EmbeddingProvider.class
 KeywordCodeRetriever.class
 CodeChunker.class
 SearchResult.class
 SearchQuery.class
+OllamaEmbeddingProvider.class
+Main.class
+VectorSimilarityDemo.class
+RepositoryScanner.class
+EmbeddingException.class
+VectorSimilarity.class
 CodeChunk.class
