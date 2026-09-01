@@ -44,6 +44,11 @@ public class OllamaEmbeddingProvider implements EmbeddingProvider {
     }
 
     @Override
+    public String getModelName() {
+        return model;
+    }
+
+    @Override
     public double[] createEmbedding(String text) {
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException("Embedding text cannot be empty.");

@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Optional;
 
 public class Main {
 
@@ -41,11 +42,34 @@ public class Main {
             // Precalculate embeddings for all code chunks and create a semantic index
             EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
             CodeEmbeddingIndexer embeddingIndexer = new CodeEmbeddingIndexer(embeddingProvider);
-            System.out.println();
-            System.out.println("Creating semantic index...");
-            // Cache the embeddings for all code chunks
-            List<EmbeddedCodeChunk> semanticIndex = embeddingIndexer.createIndex(allChunks);
-            System.out.println("Semantic index ready.");
+            Path indexPath = Path.of(".repolens", "semantic-index.json").toAbsolutePath().normalize();
+            SemanticIndexStore indexStore = new SemanticIndexStore();
+            Optional<List<EmbeddedCodeChunk>> cachedIndex = indexStore.loadIfValid(indexPath, embeddingProvider.getModelName(), allChunks);
+            List<EmbeddedCodeChunk> semanticIndex;
+            if (cachedIndex.isPresent()) {
+                semanticIndex = cachedIndex.get();
+
+                System.out.println();
+                System.out.println("Loaded semantic index from cache.");
+
+            } else {
+                System.out.println();
+                System.out.println("Creating semantic index...");
+
+                semanticIndex = embeddingIndexer.createIndex(allChunks);
+
+                try {
+                    indexStore.save(indexPath, embeddingProvider.getModelName(), semanticIndex);
+
+                    System.out.println("Semantic index created and saved.");
+
+                } catch (IOException exception) {
+                    System.out.println("Semantic index created, " + "but could not be saved.");
+
+                    System.out.println(exception.getMessage());
+                }
+            }
+
             // Initialize SemanticCodeRetriever with embedding provider and cached semantic index
             CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
