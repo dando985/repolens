@@ -18,7 +18,13 @@ public class Main {
 
         RepositoryScanner scanner = new RepositoryScanner();
         CodeChunker chunker = new CodeChunker();
-        CodeRetriever retriever = new KeywordCodeRetriever();
+
+        // KeywordCodeRetriever uses keyword matching to find relevant code chunks
+        //CodeRetriever retriever = new KeywordCodeRetriever();
+
+        // SemanticCodeRetriever uses semantic similarity to find relevant code chunks
+        EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
+        CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider);
 
         try {
             // Scans repository path for a list of Java source files
@@ -32,13 +38,8 @@ public class Main {
             }
 
             System.out.println();
-            System.out.println(
-                    "Indexed " + sourceFiles.size() + " Java file(s)."
-            );
-
-            System.out.println(
-                    "Created " + allChunks.size() + " code chunk(s)."
-            );
+            System.out.println("Indexed " + sourceFiles.size() + " Java file(s).");
+            System.out.println("Created " + allChunks.size() + " code chunk(s).");
 
             // Take user's query input
             Scanner console = new Scanner(System.in);
@@ -58,6 +59,9 @@ public class Main {
             printResults(results);
         } catch (IOException exception) {
             System.out.println("Unable to scan the repository.");
+            System.out.println(exception.getMessage());
+        } catch (EmbeddingException exception) {
+            System.out.println("Unable to perform semantic search.");
             System.out.println(exception.getMessage());
         }
     }
