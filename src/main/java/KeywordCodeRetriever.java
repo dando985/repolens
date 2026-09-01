@@ -1,12 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 // Searches code chunks and grades their relevance based on an input search query
 public class KeywordCodeRetriever implements CodeRetriever {
 
+    private final List<CodeChunk> chunks;
+
+    public KeywordCodeRetriever(List<CodeChunk> chunks) {
+        this.chunks = new ArrayList<>(Objects.requireNonNull(chunks));
+    }
+
     @Override
-    public List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery) {
+    public List<SearchResult> search(SearchQuery searchQuery) {
         List<SearchResult> results = new ArrayList<>();
 
         String[] keywords = searchQuery.getText().toLowerCase(Locale.ROOT).trim().split("\\s+");
