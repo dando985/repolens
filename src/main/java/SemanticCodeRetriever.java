@@ -7,14 +7,16 @@ import java.util.Objects;
 public class SemanticCodeRetriever implements CodeRetriever {
 
     private final EmbeddingProvider embeddingProvider;
+    private final List<EmbeddedCodeChunk> embeddedChunks;
 
-    public SemanticCodeRetriever(EmbeddingProvider embeddingProvider) {
+    public SemanticCodeRetriever(EmbeddingProvider embeddingProvider, List<EmbeddedCodeChunk> embeddedChunks) {
         this.embeddingProvider = Objects.requireNonNull(embeddingProvider);
+        this.embeddedChunks = Objects.requireNonNull(embeddedChunks);
     }
 
     @Override
-    public List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery) {
-        if (chunks.isEmpty()) {
+    public List<SearchResult> search(SearchQuery searchQuery) {
+        if (embeddedChunks.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -23,18 +25,12 @@ public class SemanticCodeRetriever implements CodeRetriever {
 
         // Calculate similarity score for each code chunk and add to results
         List<SearchResult> results = new ArrayList<>();
-        for (CodeChunk chunk : chunks) {
-            // Create embedding text for the code chunk
-            String chunkText = createEmbeddingText(chunk);
-
-            // Create embedding for the code chunk
-            double[] chunkEmbedding = embeddingProvider.createEmbedding(chunkText);
-
+        for (EmbeddedCodeChunk embeddedChunk : embeddedChunks) {
             // Calculate cosine similarity between the query embedding and the chunk embedding
-            double similarity = VectorSimilarity.cosineSimilarity(queryEmbedding, chunkEmbedding);
+            double similarity = VectorSimilarity.cosineSimilarity(queryEmbedding, embeddedChunk.getEmbedding());
 
             // Add the code chunk and its similarity score to the results list
-            results.add(new SearchResult(chunk, similarity));
+            results.add(new SearchResult(embeddedChunk.getChunk(), similarity));
         }
 
         // Sort results in descending order of similarity score
@@ -43,12 +39,5 @@ public class SemanticCodeRetriever implements CodeRetriever {
         // Limit the number of results to the maximum specified in the search query
         int resultCount = Math.min(searchQuery.getMaxResults(), results.size());
         return new ArrayList<>(results.subList(0, resultCount));
-    }
-
-    // Creates a string representation of a code chunk's metadata and content for embedding purposes
-    private String createEmbeddingText(CodeChunk chunk) {
-        return "Class: " + chunk.getClassName() + System.lineSeparator()
-                + "Method: " + chunk.getMethodName() + System.lineSeparator()
-                + "Code:" + System.lineSeparator() + chunk.getContent();
     }
 }

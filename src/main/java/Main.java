@@ -20,13 +20,6 @@ public class Main {
         RepositoryScanner scanner = new RepositoryScanner();
         CodeChunker chunker = new CodeChunker();
 
-        // KeywordCodeRetriever uses keyword matching to find relevant code chunks
-        //CodeRetriever retriever = new KeywordCodeRetriever();
-
-        // SemanticCodeRetriever uses semantic similarity to find relevant code chunks
-        EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
-        CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider);
-
         try {
             // Scans repository path for a list of Java source files
             List<JavaSourceFile> sourceFiles = scanner.scan(repositoryPath);
@@ -42,6 +35,20 @@ public class Main {
             System.out.println("Indexed " + sourceFiles.size() + " Java file(s).");
             System.out.println("Created " + allChunks.size() + " code chunk(s).");
 
+            // KeywordCodeRetriever uses keyword matching to find relevant code chunks. Initialize retriever with all code chunks.
+            //CodeRetriever retriever = new KeywordCodeRetriever(allChunks);
+
+            // Precalculate embeddings for all code chunks and create a semantic index
+            EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
+            CodeEmbeddingIndexer embeddingIndexer = new CodeEmbeddingIndexer(embeddingProvider);
+            System.out.println();
+            System.out.println("Creating semantic index...");
+            // Cache the embeddings for all code chunks
+            List<EmbeddedCodeChunk> semanticIndex = embeddingIndexer.createIndex(allChunks);
+            System.out.println("Semantic index ready.");
+            // Initialize SemanticCodeRetriever with embedding provider and cached semantic index
+            CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
+
             // Take user's query input
             Scanner console = new Scanner(System.in);
             System.out.println();
@@ -55,7 +62,7 @@ public class Main {
             // Defines query object and limits number of search results
             SearchQuery searchQuery = new SearchQuery(query, 3);
             // Get list of relevant search results in descending relevant score order (most to least relevant)
-            List<SearchResult> results = retriever.search(allChunks, searchQuery);
+            List<SearchResult> results = retriever.search(searchQuery);
 
             printResults(results);
         } catch (IOException exception) {

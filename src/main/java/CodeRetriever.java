@@ -2,5 +2,5 @@ import java.util.List;
 
 public interface CodeRetriever {
 
-    List<SearchResult> search(List<CodeChunk> chunks, SearchQuery searchQuery);
+    List<SearchResult> search(SearchQuery searchQuery);
 }
