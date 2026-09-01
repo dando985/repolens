@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// Utility class that takes a Java source file and creates a list of code chunks from its methods
 public class CodeChunker {
 
     // Creates a list of code chunks from a source file
@@ -22,7 +23,7 @@ public class CodeChunker {
             if (method.getRange().isEmpty()) {
                 continue;
             }
-            // Determine length of the method
+            // Determine the length of the method
             Range range = method.getRange().get();
             // Get method name
             String methodName = method.getNameAsString();

@@ -16,6 +16,7 @@ public class Main {
             return;
         }
 
+        // Create instances of RepositoryScanner and CodeChunker utility classes
         RepositoryScanner scanner = new RepositoryScanner();
         CodeChunker chunker = new CodeChunker();
 
@@ -53,7 +54,7 @@ public class Main {
 
             // Defines query object and limits number of search results
             SearchQuery searchQuery = new SearchQuery(query, 3);
-            // Get list of relevant search results in descending score order (most to least relevant)
+            // Get list of relevant search results in descending relevant score order (most to least relevant)
             List<SearchResult> results = retriever.search(allChunks, searchQuery);
 
             printResults(results);

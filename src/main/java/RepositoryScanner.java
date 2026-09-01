@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+// Utility class that scans a repository path and creates a list of Java source files
 public class RepositoryScanner {
 
-    // Searches repository path and creates a list of Java files that holds their file path and contents
     public List<JavaSourceFile> scan(Path repositoryPath) throws IOException {
 
         List<JavaSourceFile> sourceFiles = new ArrayList<>();
