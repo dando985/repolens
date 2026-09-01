@@ -49,24 +49,12 @@ public class Main {
             // Initialize SemanticCodeRetriever with embedding provider and cached semantic index
             CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
-            // Take user's query input
-            Scanner console = new Scanner(System.in);
-            System.out.println();
-            System.out.print("Enter a search query: ");
-            String query = console.nextLine();
-            if (query.isBlank()) {
-                System.out.println("Please enter at least one search word.");
-                return;
+            try (Scanner console = new Scanner(System.in)) {
+                runSearchLoop(console, retriever);
             }
 
-            // Defines query object and limits number of search results
-            SearchQuery searchQuery = new SearchQuery(query, 3);
-            // Get list of relevant search results in descending relevant score order (most to least relevant)
-            List<SearchResult> results = retriever.search(searchQuery);
-
-            printResults(results);
         } catch (IOException exception) {
-            System.out.println("Unable to scan the repository.");
+            System.out.println("Unable to process the repository.");
             System.out.println(exception.getMessage());
         } catch (EmbeddingException exception) {
             System.out.println("Unable to perform semantic search.");
@@ -94,6 +82,39 @@ public class Main {
             System.out.println("Lines: " + chunk.getStartLine() + "-" + chunk.getEndLine());
             System.out.println("------------------------------");
             System.out.println(chunk.getContent());
+        }
+    }
+
+    // Runs a loop that prompts the user for search queries and displays the results until the user exits
+    private static void runSearchLoop(Scanner console, CodeRetriever retriever) {
+        while (true) {
+            System.out.println();
+            System.out.print("Enter a search query " + "(or type 'exit'): ");
+
+            if (!console.hasNextLine()) {
+                System.out.println();
+                System.out.println("Search ended.");
+                return;
+            }
+
+            String query = console.nextLine().trim();
+
+            if (query.equalsIgnoreCase("exit") || query.equalsIgnoreCase("quit")) {
+                System.out.println("Search ended.");
+                return;
+            }
+
+            if (query.isBlank()) {
+                System.out.println("Please enter at least " + "one search word.");
+                continue;
+            }
+
+            // Create a search query with a maximum of 3 results
+            SearchQuery searchQuery = new SearchQuery(query, 3);
+
+            // Perform the search using the retriever and print the results
+            List<SearchResult> results = retriever.search(searchQuery);
+            printResults(results);
         }
     }
 }
