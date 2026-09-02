@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public class SearchQuery {
 
     private final String text;

@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public interface EmbeddingProvider {
 
     // Needed to avoid mixing embeddings from different models in the same index file.

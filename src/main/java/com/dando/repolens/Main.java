@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +19,7 @@ public class Main {
             return;
         }
 
-        // Create instances of RepositoryScanner and CodeChunker utility classes
+        // Create instances of com.dando.repolens.RepositoryScanner and com.dando.repolens.CodeChunker utility classes
         RepositoryScanner scanner = new RepositoryScanner();
         CodeChunker chunker = new CodeChunker();
 
@@ -36,8 +38,8 @@ public class Main {
             System.out.println("Indexed " + sourceFiles.size() + " Java file(s).");
             System.out.println("Created " + allChunks.size() + " code chunk(s).");
 
-            // KeywordCodeRetriever uses keyword matching to find relevant code chunks. Initialize retriever with all code chunks.
-            //CodeRetriever retriever = new KeywordCodeRetriever(allChunks);
+            // com.dando.repolens.KeywordCodeRetriever uses keyword matching to find relevant code chunks. Initialize retriever with all code chunks.
+            //com.dando.repolens.CodeRetriever retriever = new com.dando.repolens.KeywordCodeRetriever(allChunks);
 
             // Precalculate embeddings for all code chunks and create a semantic index
             EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
@@ -68,7 +70,7 @@ public class Main {
                 }
             }
 
-            // Initialize SemanticCodeRetriever with embedding provider and cached semantic index
+            // Initialize com.dando.repolens.SemanticCodeRetriever with embedding provider and cached semantic index
             CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
             // Start a loop that prompts the user for search queries and displays the results until the user exits

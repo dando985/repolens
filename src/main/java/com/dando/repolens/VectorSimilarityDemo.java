@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public class VectorSimilarityDemo {
 
     public static void main(String[] args) {

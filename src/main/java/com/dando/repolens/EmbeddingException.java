@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public class EmbeddingException extends RuntimeException {
 
     public EmbeddingException(String message) {

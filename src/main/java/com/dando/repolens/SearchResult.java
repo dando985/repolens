@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public class SearchResult {
 
     private final CodeChunk chunk;

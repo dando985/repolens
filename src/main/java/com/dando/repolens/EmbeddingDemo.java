@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 public class EmbeddingDemo {
 
     public static void main(String[] args) {

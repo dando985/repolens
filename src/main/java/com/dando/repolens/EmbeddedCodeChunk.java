@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 // Combines a code chunk with its corresponding embedding vector.
 public class EmbeddedCodeChunk {
 

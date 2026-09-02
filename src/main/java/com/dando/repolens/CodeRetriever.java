@@ -1,3 +1,5 @@
+package com.dando.repolens;
+
 import java.util.List;
 
 public interface CodeRetriever {
