@@ -18,7 +18,6 @@ public class CodeEmbeddingIndexer {
             String embeddingText = createEmbeddingText(chunk);
 
             double[] embedding = embeddingProvider.createEmbedding(embeddingText);
-
             index.add(new EmbeddedCodeChunk(chunk, embedding));
         }
 

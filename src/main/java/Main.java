@@ -42,30 +42,28 @@ public class Main {
             // Precalculate embeddings for all code chunks and create a semantic index
             EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
             CodeEmbeddingIndexer embeddingIndexer = new CodeEmbeddingIndexer(embeddingProvider);
+
+            // Check if a cached semantic index exists and is valid, otherwise create a new one
             Path indexPath = Path.of(".repolens", "semantic-index.json").toAbsolutePath().normalize();
             SemanticIndexStore indexStore = new SemanticIndexStore();
             Optional<List<EmbeddedCodeChunk>> cachedIndex = indexStore.loadIfValid(indexPath, embeddingProvider.getModelName(), allChunks);
             List<EmbeddedCodeChunk> semanticIndex;
             if (cachedIndex.isPresent()) {
+                // Use the cached semantic index if it exists and is valid
                 semanticIndex = cachedIndex.get();
-
                 System.out.println();
                 System.out.println("Loaded semantic index from cache.");
-
             } else {
+                // Create a new semantic index if no valid cached index exists
                 System.out.println();
                 System.out.println("Creating semantic index...");
-
                 semanticIndex = embeddingIndexer.createIndex(allChunks);
-
                 try {
+                    // Save the newly created semantic index to a JSON file for future use
                     indexStore.save(indexPath, embeddingProvider.getModelName(), semanticIndex);
-
                     System.out.println("Semantic index created and saved.");
-
                 } catch (IOException exception) {
                     System.out.println("Semantic index created, " + "but could not be saved.");
-
                     System.out.println(exception.getMessage());
                 }
             }
@@ -73,6 +71,7 @@ public class Main {
             // Initialize SemanticCodeRetriever with embedding provider and cached semantic index
             CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
+            // Start a loop that prompts the user for search queries and displays the results until the user exits
             try (Scanner console = new Scanner(System.in)) {
                 runSearchLoop(console, retriever);
             }
@@ -83,29 +82,6 @@ public class Main {
         } catch (EmbeddingException exception) {
             System.out.println("Unable to perform semantic search.");
             System.out.println(exception.getMessage());
-        }
-    }
-
-    public static void printResults(List<SearchResult> results) {
-        System.out.println();
-
-        if (results.isEmpty()) {
-            System.out.println("No matching results were found");
-        }
-
-        System.out.println("Found " + results.size() + " matching methods");
-
-        for (SearchResult result : results) {
-            CodeChunk chunk = result.getChunk();
-            System.out.println();
-            System.out.println("------------------------------");
-            System.out.printf("Score: %.3f%n", result.getScore());
-            System.out.println("File: " + chunk.getFilePath().getFileName());
-            System.out.println("Class: " + chunk.getClassName());
-            System.out.println("Method: " + chunk.getMethodName());
-            System.out.println("Lines: " + chunk.getStartLine() + "-" + chunk.getEndLine());
-            System.out.println("------------------------------");
-            System.out.println(chunk.getContent());
         }
     }
 
@@ -141,4 +117,28 @@ public class Main {
             printResults(results);
         }
     }
+
+    public static void printResults(List<SearchResult> results) {
+        System.out.println();
+
+        if (results.isEmpty()) {
+            System.out.println("No matching results were found");
+        }
+
+        System.out.println("Found " + results.size() + " matching methods");
+
+        for (SearchResult result : results) {
+            CodeChunk chunk = result.getChunk();
+            System.out.println();
+            System.out.println("------------------------------");
+            System.out.printf("Score: %.3f%n", result.getScore());
+            System.out.println("File: " + chunk.getFilePath().getFileName());
+            System.out.println("Class: " + chunk.getClassName());
+            System.out.println("Method: " + chunk.getMethodName());
+            System.out.println("Lines: " + chunk.getStartLine() + "-" + chunk.getEndLine());
+            System.out.println("------------------------------");
+            System.out.println(chunk.getContent());
+        }
+    }
+
 }
