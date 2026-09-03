@@ -3,6 +3,8 @@ package com.dando.repolens.controller;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.service.RepositorySearchService;
 import com.dando.repolens.model.SearchResult;
+import com.dando.repolens.config.RepositoryProperties;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +23,11 @@ import java.util.Map;
 public class SearchController {
 
     private final RepositorySearchService searchService;
+    private final RepositoryProperties repositoryProperties;
 
-    public SearchController(RepositorySearchService searchService) {
+    public SearchController(RepositorySearchService searchService, RepositoryProperties repositoryProperties) {
         this.searchService = searchService;
+        this.repositoryProperties = repositoryProperties;
     }
 
     @GetMapping("/keyword")
@@ -73,6 +77,6 @@ public class SearchController {
     }
 
     private Path getRepositoryPath() {
-        return Path.of("sample-project").toAbsolutePath().normalize();
+        return repositoryProperties.resolvePath();
     }
 }

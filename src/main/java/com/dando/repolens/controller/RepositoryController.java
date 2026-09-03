@@ -4,6 +4,8 @@ import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.JavaSourceFile;
 import com.dando.repolens.service.RepositoryAnalysisService;
 import com.dando.repolens.scanner.RepositoryScanner;
+import com.dando.repolens.config.RepositoryProperties;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +24,12 @@ public class RepositoryController {
 
     private final RepositoryScanner repositoryScanner;
     private final RepositoryAnalysisService analysisService;
+    private final RepositoryProperties repositoryProperties;
 
-    public RepositoryController(RepositoryScanner repositoryScanner, RepositoryAnalysisService analysisService) {
+    public RepositoryController(RepositoryScanner repositoryScanner, RepositoryAnalysisService analysisService, RepositoryProperties repositoryProperties) {
         this.repositoryScanner = repositoryScanner;
         this.analysisService = analysisService;
+        this.repositoryProperties = repositoryProperties;
     }
 
     @GetMapping("/scan")
@@ -84,7 +88,7 @@ public class RepositoryController {
     }
 
     private Path getRepositoryPath() {
-        return Path.of("sample-project").toAbsolutePath().normalize();
+        return repositoryProperties.resolvePath();
     }
 
     private ResponseEntity<Map<String, Object>> repositoryNotFound(Path repositoryPath) {
