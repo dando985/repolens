@@ -1,4 +1,8 @@
-package com.dando.repolens;
+package com.dando.repolens.chunking;
+
+import com.dando.repolens.model.CodeChunk;
+import com.dando.repolens.model.JavaSourceFile;
+import org.springframework.stereotype.Service;
 
 import com.github.javaparser.Range;
 import com.github.javaparser.StaticJavaParser;
@@ -11,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Utility class that takes a Java source file and creates a list of code chunks from its methods
+@Service
 public class CodeChunker {
 
     // Creates a list of code chunks from a source file

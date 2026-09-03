@@ -1,4 +1,4 @@
-package com.dando.repolens;
+package com.dando.repolens.model;
 
 import java.nio.file.Path;
 

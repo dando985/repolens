@@ -1,4 +1,4 @@
-package com.dando.repolens;
+package com.dando.repolens.embedding;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package com.dando.repolens;
+package com.dando.repolens.embedding;
 
 public class EmbeddingException extends RuntimeException {
 

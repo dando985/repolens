@@ -1,5 +1,9 @@
 package com.dando.repolens;
 
+import com.dando.repolens.embedding.EmbeddingException;
+import com.dando.repolens.embedding.EmbeddingProvider;
+import com.dando.repolens.embedding.OllamaEmbeddingProvider;
+
 public class EmbeddingDemo {
 
     public static void main(String[] args) {

@@ -1,4 +1,9 @@
-package com.dando.repolens;
+package com.dando.repolens.retrieval;
+
+import com.dando.repolens.embedding.EmbeddingProvider;
+import com.dando.repolens.model.EmbeddedCodeChunk;
+import com.dando.repolens.model.SearchQuery;
+import com.dando.repolens.model.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;

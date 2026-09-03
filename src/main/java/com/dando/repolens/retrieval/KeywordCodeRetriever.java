@@ -1,4 +1,8 @@
-package com.dando.repolens;
+package com.dando.repolens.retrieval;
+
+import com.dando.repolens.model.CodeChunk;
+import com.dando.repolens.model.SearchQuery;
+import com.dando.repolens.model.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;

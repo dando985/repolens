@@ -1,5 +1,6 @@
-package com.dando.repolens;
+package com.dando.repolens.scanner;
 
+import com.dando.repolens.model.JavaSourceFile;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

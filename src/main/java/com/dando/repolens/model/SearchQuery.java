@@ -1,4 +1,4 @@
-package com.dando.repolens;
+package com.dando.repolens.model;
 
 public class SearchQuery {
 

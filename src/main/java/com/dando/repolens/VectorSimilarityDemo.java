@@ -1,5 +1,7 @@
 package com.dando.repolens;
 
+import com.dando.repolens.retrieval.VectorSimilarity;
+
 public class VectorSimilarityDemo {
 
     public static void main(String[] args) {

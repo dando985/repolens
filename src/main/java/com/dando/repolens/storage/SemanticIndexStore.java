@@ -1,5 +1,7 @@
-package com.dando.repolens;
+package com.dando.repolens.storage;
 
+import com.dando.repolens.model.CodeChunk;
+import com.dando.repolens.model.EmbeddedCodeChunk;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -117,7 +119,7 @@ public class SemanticIndexStore {
                     return Optional.empty();
                 }
 
-                // Read the embedding vector from the stored chunk and create an com.dando.repolens.EmbeddedCodeChunk object to add to the semantic index
+                // Read the embedding vector from the stored chunk and create an com.dando.repolens.model.EmbeddedCodeChunk object to add to the semantic index
                 double[] embedding = readEmbedding(storedChunk);
                 semanticIndex.add(new EmbeddedCodeChunk(currentChunk, embedding));
             }

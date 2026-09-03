@@ -1,4 +1,16 @@
-package com.dando.repolens;
+package com.dando.repolens.cli;
+
+import com.dando.repolens.chunking.CodeChunker;
+import com.dando.repolens.embedding.CodeEmbeddingIndexer;
+import com.dando.repolens.embedding.EmbeddingException;
+import com.dando.repolens.embedding.EmbeddingProvider;
+import com.dando.repolens.embedding.OllamaEmbeddingProvider;
+import com.dando.repolens.model.*;
+import com.dando.repolens.retrieval.CodeRetriever;
+import com.dando.repolens.retrieval.SemanticCodeRetriever;
+import com.dando.repolens.scanner.FileSystemRepositoryScanner;
+import com.dando.repolens.scanner.RepositoryScanner;
+import com.dando.repolens.storage.SemanticIndexStore;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +31,7 @@ public class Main {
             return;
         }
 
-        // Create instances of com.dando.repolens.RepositoryScanner and com.dando.repolens.CodeChunker utility classes
+        // Create instances of com.dando.repolens.scanner.RepositoryScanner and com.dando.repolens.chunking.CodeChunker utility classes
         RepositoryScanner scanner = new FileSystemRepositoryScanner();
         CodeChunker chunker = new CodeChunker();
 
@@ -38,8 +50,8 @@ public class Main {
             System.out.println("Indexed " + sourceFiles.size() + " Java file(s).");
             System.out.println("Created " + allChunks.size() + " code chunk(s).");
 
-            // com.dando.repolens.KeywordCodeRetriever uses keyword matching to find relevant code chunks. Initialize retriever with all code chunks.
-            //com.dando.repolens.CodeRetriever retriever = new com.dando.repolens.KeywordCodeRetriever(allChunks);
+            // KeywordCodeRetriever uses keyword matching to find relevant code chunks. Initialize retriever with all code chunks.
+            // CodeRetriever retriever = new KeywordCodeRetriever(allChunks);
 
             // Precalculate embeddings for all code chunks and create a semantic index
             EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
@@ -70,7 +82,7 @@ public class Main {
                 }
             }
 
-            // Initialize com.dando.repolens.SemanticCodeRetriever with embedding provider and cached semantic index
+            // Initialize com.dando.repolens.retrieval.SemanticCodeRetriever with embedding provider and cached semantic index
             CodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
             // Start a loop that prompts the user for search queries and displays the results until the user exits

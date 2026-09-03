@@ -1,4 +1,7 @@
-package com.dando.repolens;
+package com.dando.repolens.embedding;
+
+import com.dando.repolens.model.CodeChunk;
+import com.dando.repolens.model.EmbeddedCodeChunk;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,6 @@
-package com.dando.repolens;
+package com.dando.repolens.scanner;
+
+import com.dando.repolens.model.JavaSourceFile;
 
 import java.io.IOException;
 import java.nio.file.Path;

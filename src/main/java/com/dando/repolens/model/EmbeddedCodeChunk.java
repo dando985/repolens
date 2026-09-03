@@ -1,4 +1,4 @@
-package com.dando.repolens;
+package com.dando.repolens.model;
 
 // Combines a code chunk with its corresponding embedding vector.
 public class EmbeddedCodeChunk {
