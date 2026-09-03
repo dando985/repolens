@@ -20,7 +20,7 @@ public class Main {
         }
 
         // Create instances of com.dando.repolens.RepositoryScanner and com.dando.repolens.CodeChunker utility classes
-        RepositoryScanner scanner = new RepositoryScanner();
+        RepositoryScanner scanner = new FileSystemRepositoryScanner();
         CodeChunker chunker = new CodeChunker();
 
         try {
