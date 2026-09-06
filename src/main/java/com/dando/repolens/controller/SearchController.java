@@ -1,10 +1,11 @@
 package com.dando.repolens.controller;
 
-import com.dando.repolens.model.CodeChunk;
-import com.dando.repolens.service.RepositorySearchService;
-import com.dando.repolens.model.SearchResult;
 import com.dando.repolens.config.RepositoryProperties;
-
+import com.dando.repolens.dto.ApiErrorResponse;
+import com.dando.repolens.dto.SearchResponse;
+import com.dando.repolens.dto.SearchResultResponse;
+import com.dando.repolens.model.SearchResult;
+import com.dando.repolens.service.RepositorySearchService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/search")
@@ -31,49 +31,35 @@ public class SearchController {
     }
 
     @GetMapping("/keyword")
-    public ResponseEntity<Map<String, Object>> keywordSearch(@RequestParam String query, @RequestParam(defaultValue = "5") int limit) {
+    public ResponseEntity<?> keywordSearch(@RequestParam String query, @RequestParam(defaultValue = "5") int limit) {
         if (query.isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Search query cannot be blank"));
+            return ResponseEntity.badRequest().body(new ApiErrorResponse("Search query cannot be blank"));
         }
 
         // Limit the number of results to between 1 and 20
         if (limit < 1 || limit > 20) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Limit must be between 1 and 20"));
+            return ResponseEntity.badRequest().body(new ApiErrorResponse("Limit must be between 1 and 20"));
         }
 
         Path repositoryPath = getRepositoryPath();
 
         if (!Files.isDirectory(repositoryPath)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Repository directory was not found", "path", repositoryPath.toString()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse("Repository directory was not found", repositoryPath.toString()));
         }
 
         try {
             List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
 
-            List<Map<String, Object>> responseResults = results.stream().map(this::createResultResponse).toList();
+            List<SearchResultResponse> responseResults = results.stream().map(SearchResultResponse::from).toList();
 
-            return ResponseEntity.ok(Map.of(
-                    "query", query,
-                    "resultCount", responseResults.size(),
-                    "results", responseResults));
+            SearchResponse response = new SearchResponse(query, responseResults.size(), responseResults);
+
+            return ResponseEntity.ok(response);
         } catch (IOException exception) {
             String details = exception.getMessage() == null ? "No additional details" : exception.getMessage();
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Unable to search repository", "details", details));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiErrorResponse("Unable to search repository", details));
         }
-    }
-
-    private Map<String, Object> createResultResponse(SearchResult result) {
-        CodeChunk chunk = result.getChunk();
-
-        return Map.of(
-                "score", result.getScore(),
-                "file", chunk.getFilePath().getFileName().toString(),
-                "className", chunk.getClassName(),
-                "methodName", chunk.getMethodName(),
-                "startLine", chunk.getStartLine(),
-                "endLine", chunk.getEndLine(),
-                "content", chunk.getContent());
     }
 
     private Path getRepositoryPath() {
