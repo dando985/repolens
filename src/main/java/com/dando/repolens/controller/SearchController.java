@@ -51,6 +51,7 @@ public class SearchController {
             List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
             List<SearchResultResponse> responseResults = results.stream().map(result -> SearchResultResponse.from(result)).toList();
 
+            // Format response as a DTO
             SearchResponse response = new SearchResponse(query, responseResults.size(), responseResults);
 
             return ResponseEntity.ok(response);
