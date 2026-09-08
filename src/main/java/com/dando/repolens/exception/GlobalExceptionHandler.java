@@ -1,6 +1,7 @@
 package com.dando.repolens.exception;
 
 import com.dando.repolens.dto.ApiErrorResponse;
+import com.dando.repolens.embedding.EmbeddingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,5 +33,12 @@ public class GlobalExceptionHandler {
         ApiErrorResponse response = new ApiErrorResponse("Unable to process repository", details);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(EmbeddingException.class)
+    public ResponseEntity<ApiErrorResponse> handleEmbeddingException(EmbeddingException exception) {
+        ApiErrorResponse response = new ApiErrorResponse("Embedding provider is unavailable", exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
     }
 }

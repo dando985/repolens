@@ -54,7 +54,7 @@ public class Main {
             // CodeRetriever retriever = new KeywordCodeRetriever(allChunks);
 
             // Precalculate embeddings for all code chunks and create a semantic index
-            EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider();
+            EmbeddingProvider embeddingProvider = new OllamaEmbeddingProvider("http://localhost:11434", "embeddinggemma");
             CodeEmbeddingIndexer embeddingIndexer = new CodeEmbeddingIndexer(embeddingProvider);
 
             // Check if a cached semantic index exists and is valid, otherwise create a new one

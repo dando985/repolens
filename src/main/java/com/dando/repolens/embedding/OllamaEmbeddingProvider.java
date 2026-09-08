@@ -2,14 +2,13 @@ package com.dando.repolens.embedding;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
+import java.util.Map;
 
 /*
 Builds a request containing the model and text.
@@ -19,100 +18,74 @@ Extracts the returned numbers into a double[]
  */
 public class OllamaEmbeddingProvider implements EmbeddingProvider {
 
-    // Connects to local Ollama endpoint (port 11434)
-    private static final URI EMBEDDING_ENDPOINT = URI.create("http://localhost:11434/api/embed");
-    // Define default Ollama embedding model
-    private static final String DEFAULT_MODEL = "embeddinggemma";
-
     // Object to communicate with Ollama
     private final HttpClient httpClient;
     // Store the Jackson JSON utility
     private final ObjectMapper objectMapper;
-    // Stores particular Ollama model used by provider
-    private final String model;
 
-    public OllamaEmbeddingProvider() {
-        this(DEFAULT_MODEL);
-    }
+    private final URI endpoint;
 
-    public OllamaEmbeddingProvider(String model) {
-        if (model == null || model.isBlank()) {
-            throw new IllegalArgumentException("The embedding model cannot be empty.");
+    private final String modelName;
+
+    public OllamaEmbeddingProvider(String baseUrl, String modelName) {
+        if (baseUrl == null || baseUrl.isBlank()) {
+            throw new IllegalArgumentException("The Ollama base URL cannot be blank.");
         }
 
-        this.model = model;
-        this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
+        if (modelName == null || modelName.isBlank()) {
+            throw new IllegalArgumentException("The Ollama model name cannot be blank.");
+        }
+
+        String normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
+        this.endpoint = URI.create(normalizedBaseUrl + "/api/embed");
+
+        this.modelName = modelName;
+        this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
+
     }
 
     @Override
     public String getModelName() {
-        return model;
+        return modelName;
     }
 
     @Override
-    public double[] createEmbedding(String text) {
-        if (text == null || text.isBlank()) {
-            throw new IllegalArgumentException("Embedding text cannot be empty.");
-        }
-
-        // Create empty JSON object
-        ObjectNode requestBody = objectMapper.createObjectNode();
-
-        // Adds model and text to be embedded to JSON object
-        requestBody.put("model", model);
-        requestBody.put("input", text);
-
-        // Build HTTP request object
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .uri(EMBEDDING_ENDPOINT)
-                .timeout(Duration.ofMinutes(5))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
-                .build();
-
-        // Send request to Ollama
+    public double[] createEmbedding(String text) throws EmbeddingException {
         try {
+            String requestBody = objectMapper.writeValueAsString(Map.of("model", modelName, "input", text));
+
+            HttpRequest request = HttpRequest.newBuilder().uri(endpoint).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
+
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new EmbeddingException("Ollama returned HTTP " + response.statusCode() + ": " + response.body());
+                throw new EmbeddingException("Ollama returned HTTP status " + response.statusCode() + ": " + response.body());
             }
 
-            // Extract the vector
-            return extractEmbedding(response.body());
+            JsonNode responseJson = objectMapper.readTree(response.body());
+
+            JsonNode embeddingsNode = responseJson.path("embeddings");
+
+            if (!embeddingsNode.isArray() || embeddingsNode.isEmpty()) {
+                throw new EmbeddingException("Ollama response did not contain an embedding");
+            }
+
+            JsonNode vectorNode = embeddingsNode.get(0);
+            double[] embedding = new double[vectorNode.size()];
+
+            for (int index = 0; index < vectorNode.size(); index++) {
+                embedding[index] = vectorNode.get(index).asDouble();
+            }
+
+            return embedding;
+
         } catch (InterruptedException exception) {
-            // Clear thread's interrupted status
             Thread.currentThread().interrupt();
-            throw new EmbeddingException("The Ollama request was interrupted.", exception);
+
+            throw new EmbeddingException("Ollama request was interrupted", exception);
         } catch (IOException exception) {
-            throw new EmbeddingException("Unable to communicate with Ollama. " + "Make sure Ollama is running.", exception);
+            throw new EmbeddingException("Unable to communicate with Ollama", exception);
         }
-    }
-
-    // Helper to receive Ollama's JSON response as a string, extracts first embedding, and converts to double[]
-    private double[] extractEmbedding(String responseBody) throws IOException {
-        // Converts JSON text into a tree of JsonNode Objects
-        JsonNode responseJson = objectMapper.readTree(responseBody);
-        // Extract embeddings
-        JsonNode embeddingsNode = responseJson.get("embeddings");
-
-        if (embeddingsNode == null || !embeddingsNode.isArray() || embeddingsNode.size() == 0) {
-            throw new EmbeddingException("Ollama returned no embeddings.");
-        }
-
-        JsonNode vectorNode = embeddingsNode.get(0);
-        if (!vectorNode.isArray() || vectorNode.isEmpty()) {
-            throw new EmbeddingException("Ollama returned an empty embedding.");
-        }
-
-        // Copies values from JsonNode object to a double[]
-        double[] embedding = new double[vectorNode.size()];
-        for (int index = 0; index < vectorNode.size(); index++) {
-            embedding[index] = vectorNode.get(index).asDouble();
-        }
-
-        return embedding;
     }
 }
