@@ -1,6 +1,5 @@
 package com.dando.repolens.service;
 
-import com.dando.repolens.embedding.CodeEmbeddingIndexer;
 import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import com.dando.repolens.model.CodeChunk;
@@ -19,12 +18,12 @@ import java.util.List;
 public class RepositorySearchService {
 
     private final RepositoryAnalysisService analysisService;
-    private final CodeEmbeddingIndexer codeEmbeddingIndexer;
+    private final SemanticIndexService semanticIndexService;
     private final EmbeddingProvider embeddingProvider;
 
-    public RepositorySearchService(RepositoryAnalysisService analysisService, CodeEmbeddingIndexer codeEmbeddingIndexer, EmbeddingProvider embeddingProvider) {
+    public RepositorySearchService(RepositoryAnalysisService analysisService, SemanticIndexService semanticIndexService, EmbeddingProvider embeddingProvider) {
         this.analysisService = analysisService;
-        this.codeEmbeddingIndexer = codeEmbeddingIndexer;
+        this.semanticIndexService = semanticIndexService;
         this.embeddingProvider = embeddingProvider;
     }
 
@@ -42,14 +41,13 @@ public class RepositorySearchService {
     }
 
     public List<SearchResult> semanticSearch(Path repositoryPath, String query, int limit) throws IOException, EmbeddingException {
-        List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
+        List<EmbeddedCodeChunk> semanticIndex = semanticIndexService.getOrCreateIndex(repositoryPath);
 
-        List<EmbeddedCodeChunk> embeddedChunks = codeEmbeddingIndexer.createIndex(chunks);
-
-        SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, embeddedChunks);
+        SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
         SearchQuery searchQuery = new SearchQuery(query, limit);
 
         return retriever.search(searchQuery);
     }
+
 }
