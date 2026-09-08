@@ -6,6 +6,7 @@ import com.dando.repolens.dto.SearchResponse;
 import com.dando.repolens.dto.SearchResultResponse;
 import com.dando.repolens.exception.InvalidSearchRequestException;
 import com.dando.repolens.exception.RepositoryNotFoundException;
+import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.model.SearchResult;
 import com.dando.repolens.service.RepositorySearchService;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,23 @@ public class SearchController {
         // Format response results as a DTO
         return new SearchResponse(query, responseResults.size(), responseResults);
 
+    }
+
+    @GetMapping("/semantic")
+    public SearchResponse semanticSearch(@RequestParam String query, @RequestParam(defaultValue = "5") int limit) throws IOException, EmbeddingException {
+        validateSearchRequest(query, limit);
+
+        Path repositoryPath = repositoryProperties.resolvePath();
+
+        if (!Files.isDirectory(repositoryPath)) {
+            throw new RepositoryNotFoundException(repositoryPath);
+        }
+
+        List<SearchResult> results = searchService.semanticSearch(repositoryPath, query, limit);
+
+        List<SearchResultResponse> responseResults = results.stream().map(SearchResultResponse::from).toList();
+
+        return new SearchResponse(query, responseResults.size(), responseResults);
     }
 
     private void validateSearchRequest(String query, int limit) {

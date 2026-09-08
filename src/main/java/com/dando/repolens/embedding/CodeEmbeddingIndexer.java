@@ -2,18 +2,20 @@ package com.dando.repolens.embedding;
 
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.EmbeddedCodeChunk;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 // Sends code chunks to the embedding provider to create embeddings and build an index of embedded code chunks
+@Service
 public class CodeEmbeddingIndexer {
 
     private final EmbeddingProvider embeddingProvider;
 
     public CodeEmbeddingIndexer(EmbeddingProvider embeddingProvider) {
-        this.embeddingProvider = Objects.requireNonNull(embeddingProvider);
+        this.embeddingProvider = embeddingProvider;
     }
 
     public List<EmbeddedCodeChunk> createIndex(List<CodeChunk> chunks) {
