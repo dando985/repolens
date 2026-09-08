@@ -1,13 +1,11 @@
 package com.dando.repolens.controller;
 
+import com.dando.repolens.config.RepositoryProperties;
+import com.dando.repolens.exception.RepositoryNotFoundException;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.JavaSourceFile;
-import com.dando.repolens.service.RepositoryAnalysisService;
 import com.dando.repolens.scanner.RepositoryScanner;
-import com.dando.repolens.config.RepositoryProperties;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.dando.repolens.service.RepositoryAnalysisService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,71 +31,48 @@ public class RepositoryController {
     }
 
     @GetMapping("/scan")
-    public ResponseEntity<Map<String, Object>> scanRepository() {
+    public Map<String, Object> scanRepository() throws IOException {
         // Determine repository path
-        Path repositoryPath = getRepositoryPath();
+        Path repositoryPath = requireRepositoryPath();
 
-        if (!Files.isDirectory(repositoryPath)) {
-            return repositoryNotFound(repositoryPath);
-        }
+        // Scan the repository for Java source files using RepositoryScanner service
+        List<JavaSourceFile> sourceFiles = repositoryScanner.scan(repositoryPath);
 
-        try {
-            // Scan the repository for Java source files using RepositoryScanner service
-            List<JavaSourceFile> sourceFiles = repositoryScanner.scan(repositoryPath);
+        // Create a list of relative file names for the HTTP response
+        List<String> fileNames = sourceFiles.stream().map(sourceFile -> repositoryPath.relativize(sourceFile.getPath()).toString()).toList();
 
-            // Create a list of relative file names for the HTTP response
-            List<String> fileNames = sourceFiles.stream().map(sourceFile -> repositoryPath.relativize(sourceFile.getPath()).toString()).toList();
-
-            // HTTP response
-            return ResponseEntity.ok(Map.of(
-                    "repository", repositoryPath.toString(),
-                    "javaFileCount", sourceFiles.size(),
-                    "files", fileNames));
-
-        } catch (IOException exception) {
-            String details = exception.getMessage() == null ? "No additional details" : exception.getMessage();
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Unable to scan repository", "details", details));
-        }
+        // HTTP response
+        return Map.of(
+                "repository", repositoryPath.toString(),
+                "javaFileCount", sourceFiles.size(),
+                "files", fileNames);
     }
 
     @GetMapping("/methods")
-    public ResponseEntity<Map<String, Object>> findMethods() {
+    public Map<String, Object> findMethods() throws IOException {
         // Determine repository path
-        Path repositoryPath = getRepositoryPath();
+        Path repositoryPath = requireRepositoryPath();
+
+        // Use RepositoryAnalysisService to scan and chunk methods in the repository
+        List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
+
+        // Create a list of method names for the HTTP response
+        List<String> methods = chunks.stream().map(chunk -> chunk.getClassName() + "." + chunk.getMethodName()).toList();
+
+        // HTTP response
+        return Map.of(
+                "repository", repositoryPath.toString(),
+                "methodChunkCount", chunks.size(),
+                "methods", methods);
+    }
+
+    private Path requireRepositoryPath() {
+        Path repositoryPath = repositoryProperties.resolvePath();
 
         if (!Files.isDirectory(repositoryPath)) {
-            return repositoryNotFound(repositoryPath);
+            throw new RepositoryNotFoundException(repositoryPath);
         }
 
-        try {
-            // Use RepositoryAnalysisService to scan and chunk methods in the repository
-            List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
-
-            // Create a list of method names for the HTTP response
-            List<String> methods = chunks.stream().map(chunk -> chunk.getClassName() + "." + chunk.getMethodName()).toList();
-
-            // HTTP response
-            return ResponseEntity.ok(Map.of(
-                    "repository", repositoryPath.toString(),
-                    "methodChunkCount", chunks.size(),
-                    "methods", methods));
-        } catch (IOException exception) {
-            return processingError(exception);
-        }
-    }
-
-    private Path getRepositoryPath() {
-        return repositoryProperties.resolvePath();
-    }
-
-    private ResponseEntity<Map<String, Object>> repositoryNotFound(Path repositoryPath) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Repository directory was not found", "path", repositoryPath.toString()));
-    }
-
-    private ResponseEntity<Map<String, Object>> processingError(IOException exception) {
-        String details = exception.getMessage() == null ? "No additional details" : exception.getMessage();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Unable to process repository", "details", details));
+        return repositoryPath;
     }
 }
