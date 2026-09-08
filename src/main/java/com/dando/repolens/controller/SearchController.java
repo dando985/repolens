@@ -1,7 +1,6 @@
 package com.dando.repolens.controller;
 
 import com.dando.repolens.config.RepositoryProperties;
-import com.dando.repolens.dto.ApiErrorResponse;
 import com.dando.repolens.dto.SearchResponse;
 import com.dando.repolens.dto.SearchResultResponse;
 import com.dando.repolens.exception.InvalidSearchRequestException;
@@ -9,8 +8,6 @@ import com.dando.repolens.exception.RepositoryNotFoundException;
 import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.model.SearchResult;
 import com.dando.repolens.service.RepositorySearchService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
