@@ -23,7 +23,7 @@ public class CodeChunker {
         List<CodeChunk> chunks = new ArrayList<>();
 
         // Parse source file and create list of its methods
-        CompilationUnit compilationUnit = StaticJavaParser.parse(sourceFile.getPath());
+        CompilationUnit compilationUnit = StaticJavaParser.parse(sourceFile.getContent());;
         List<MethodDeclaration> methods = compilationUnit.findAll(MethodDeclaration.class);
 
         for (MethodDeclaration method : methods) {
