@@ -23,6 +23,7 @@ public class FileSystemRepositoryScanner implements RepositoryScanner {
             List<Path> javaFilePaths = paths
                     .filter(path -> Files.isRegularFile(path))
                     .filter(path -> path.toString().endsWith(".java"))
+                    .sorted()
                     .toList();
 
             for (Path javaFilePath : javaFilePaths) {
