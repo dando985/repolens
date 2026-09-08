@@ -4,6 +4,8 @@ import com.dando.repolens.config.RepositoryProperties;
 import com.dando.repolens.dto.ApiErrorResponse;
 import com.dando.repolens.dto.SearchResponse;
 import com.dando.repolens.dto.SearchResultResponse;
+import com.dando.repolens.exception.InvalidSearchRequestException;
+import com.dando.repolens.exception.RepositoryNotFoundException;
 import com.dando.repolens.model.SearchResult;
 import com.dando.repolens.service.RepositorySearchService;
 import org.springframework.http.HttpStatus;
@@ -31,38 +33,30 @@ public class SearchController {
     }
 
     @GetMapping("/keyword")
-    public ResponseEntity<?> keywordSearch(@RequestParam String query, @RequestParam(defaultValue = "5") int limit) {
-        if (query.isBlank()) {
-            return ResponseEntity.badRequest().body(new ApiErrorResponse("Search query cannot be blank"));
-        }
+    public SearchResponse keywordSearch(@RequestParam String query, @RequestParam(defaultValue = "5") int limit) throws IOException {
+        validateSearchRequest(query, limit);
 
-        // Limit the number of results to between 1 and 20
-        if (limit < 1 || limit > 20) {
-            return ResponseEntity.badRequest().body(new ApiErrorResponse("Limit must be between 1 and 20"));
-        }
-
-        Path repositoryPath = getRepositoryPath();
+        Path repositoryPath = repositoryProperties.resolvePath();
 
         if (!Files.isDirectory(repositoryPath)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse("Repository directory was not found", repositoryPath.toString()));
+            throw new RepositoryNotFoundException(repositoryPath);
         }
 
-        try {
-            List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
-            List<SearchResultResponse> responseResults = results.stream().map(result -> SearchResultResponse.from(result)).toList();
+        List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
+        List<SearchResultResponse> responseResults = results.stream().map(result -> SearchResultResponse.from(result)).toList();
 
-            // Format response as a DTO
-            SearchResponse response = new SearchResponse(query, responseResults.size(), responseResults);
+        // Format response results as a DTO
+        return new SearchResponse(query, responseResults.size(), responseResults);
 
-            return ResponseEntity.ok(response);
-        } catch (IOException exception) {
-            String details = exception.getMessage() == null ? "No additional details" : exception.getMessage();
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiErrorResponse("Unable to search repository", details));
-        }
     }
 
-    private Path getRepositoryPath() {
-        return repositoryProperties.resolvePath();
+    private void validateSearchRequest(String query, int limit) {
+        if (query.isBlank()) {
+            throw new InvalidSearchRequestException("Search query cannot be blank");
+        }
+
+        if (limit < 1 || limit > 20) {
+            throw new InvalidSearchRequestException("Limit must be between 1 and 20");
+        }
     }
 }
