@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface RepositoryScanner {
 
-    List<JavaSourceFile> scan(Path repositoryPath)
-            throws IOException;
+    List<JavaSourceFile> scan(Path repositoryPath) throws IOException;
+
 }
