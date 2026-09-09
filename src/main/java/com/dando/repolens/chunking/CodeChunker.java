@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Utility class that takes a Java source file and creates a list of code chunks from its methods
+// Spring service that takes a Java source file and creates a list of CodeChunk objects from its methods
 @Service
 public class CodeChunker {
 
@@ -22,18 +22,21 @@ public class CodeChunker {
     public List<CodeChunk> createChunks(JavaSourceFile sourceFile) throws IOException {
         List<CodeChunk> chunks = new ArrayList<>();
 
-        // Parse source file and create list of its methods
+        // Initialize abstract syntax tree from source file content
         CompilationUnit compilationUnit = StaticJavaParser.parse(sourceFile.getContent());;
+
+        // Search syntax tree for all method declaration nodes
         List<MethodDeclaration> methods = compilationUnit.findAll(MethodDeclaration.class);
 
         for (MethodDeclaration method : methods) {
             if (method.getRange().isEmpty()) {
                 continue;
             }
-            // Determine the length of the method
+            // Determine the start and end lines of the method
             Range range = method.getRange().get();
-            // Get method name
+
             String methodName = method.getNameAsString();
+
             // Find the class belonging to the method
             String className = method
                     .findAncestor(ClassOrInterfaceDeclaration.class)
