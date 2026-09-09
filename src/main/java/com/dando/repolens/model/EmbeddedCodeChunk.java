@@ -12,7 +12,7 @@ public class EmbeddedCodeChunk {
         }
 
         if (embedding == null || embedding.length == 0) {
-            throw new IllegalArgumentException("Embedding cannot be empty.");
+            throw new IllegalArgumentException("Embedding cannot be null or empty.");
         }
 
         this.chunk = chunk;
