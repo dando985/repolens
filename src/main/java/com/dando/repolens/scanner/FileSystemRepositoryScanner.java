@@ -26,6 +26,7 @@ public class FileSystemRepositoryScanner implements RepositoryScanner {
                     .sorted()
                     .toList();
 
+            // Keep path and content together for each Java source file
             for (Path javaFilePath : javaFilePaths) {
                 String content = Files.readString(javaFilePath);
                 JavaSourceFile sourceFile = new JavaSourceFile(javaFilePath, content);
