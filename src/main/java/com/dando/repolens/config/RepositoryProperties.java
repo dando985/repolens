@@ -9,7 +9,7 @@ import java.nio.file.Path;
 @ConfigurationProperties(prefix = "repolens.repository")
 public class RepositoryProperties {
 
-    // Define path property
+    // Define path property (defined in application.properties as repolens.repository.path)
     private String path;
 
     public String getPath() {
@@ -20,7 +20,9 @@ public class RepositoryProperties {
         this.path = path;
     }
 
+    // Resolve the path to an absolute and normalized Path object
     public Path resolvePath() {
+        // Check if usable path is set
         if (path == null || path.isBlank()) {
             throw new IllegalStateException("Missing required property: repolens.repository.path");
         }
