@@ -1,5 +1,6 @@
 package com.dando.repolens.model;
 
+// Validates search queries and ensures the max result limit is a positive integer
 public class SearchQuery {
 
     private final String text;
@@ -7,7 +8,7 @@ public class SearchQuery {
 
     public SearchQuery(String text, int maxResults) {
         if (text == null || text.isBlank()) {
-            throw new IllegalArgumentException("Search text cannot be empty.");
+            throw new IllegalArgumentException("Search text cannot be null or empty.");
         }
 
         if (maxResults <= 0) {
