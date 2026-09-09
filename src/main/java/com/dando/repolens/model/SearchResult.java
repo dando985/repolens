@@ -1,5 +1,6 @@
 package com.dando.repolens.model;
 
+// Combines a CodeChunk with its corresponding relevance score in relation to a search query.
 public class SearchResult {
 
     private final CodeChunk chunk;
