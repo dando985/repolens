@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-// Utility class that scans a repository path and creates a list of Java source files
+// Spring service that scans a repository path and creates a list of JavaSourceFile objects
 @Service
 public class FileSystemRepositoryScanner implements RepositoryScanner {
 
