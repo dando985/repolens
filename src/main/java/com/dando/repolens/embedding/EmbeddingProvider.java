@@ -2,9 +2,9 @@ package com.dando.repolens.embedding;
 
 public interface EmbeddingProvider {
 
-    // Needed to avoid mixing embeddings from different models in the same index file.
-    // The model name is stored in the index file and checked when loading the index.
+    // Identifies embedding model
     String getModelName();
 
+    // Converts text to embedding vector
     double[] createEmbedding(String text);
 }
