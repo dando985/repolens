@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-// Sends code chunks to the embedding provider to create embeddings and build an index of embedded code chunks
+// Converts CodeChunk objects into EmbeddedCodeChunk objects by generating embeddings for each chunk using the provided EmbeddingProvider.
 @Service
 public class CodeEmbeddingIndexer {
 
@@ -30,11 +30,14 @@ public class CodeEmbeddingIndexer {
         return index;
     }
 
-    // Creates a text representation of a code chunk and its metadata to be used for embedding generation
+    // Creates a meaningful text representation of a code chunk and its metadata to be used for embedding generation
     private String createEmbeddingText(CodeChunk chunk) {
-        return "File: " + chunk.getFilePath().getFileName() + System.lineSeparator()
-                + "Class: " + chunk.getClassName() + System.lineSeparator()
-                + "Method: " + chunk.getMethodName() + System.lineSeparator()
-                + "Code:" + System.lineSeparator() + chunk.getContent();
+        return String.join(
+                "\n",
+                "File: " + chunk.getFilePath().getFileName(),
+                "Class: " + chunk.getClassName(),
+                "Method: " + chunk.getMethodName(),
+                "Code:", chunk.getContent()
+        );
     }
 }
