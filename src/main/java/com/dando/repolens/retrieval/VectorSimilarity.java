@@ -1,6 +1,6 @@
 package com.dando.repolens.retrieval;
 
-// Compares two vectors and returns cosine similarity
+// Utility class to compare two vectors and return cosine similarity
 public final class VectorSimilarity {
 
     private VectorSimilarity() {
@@ -11,7 +11,7 @@ public final class VectorSimilarity {
             throw new IllegalArgumentException("Vectors cannot be null.");
         }
 
-        if (firstVector.length == 0) {
+        if (firstVector.length == 0 || secondVector.length == 0) {
             throw new IllegalArgumentException("Vectors cannot be empty.");
         }
 
