@@ -17,17 +17,17 @@ public class SemanticCodeRetriever implements CodeRetriever {
     private final List<EmbeddedCodeChunk> embeddedChunks;
 
     public SemanticCodeRetriever(EmbeddingProvider embeddingProvider, List<EmbeddedCodeChunk> embeddedChunks) {
-        this.embeddingProvider = Objects.requireNonNull(embeddingProvider);
-        this.embeddedChunks = Objects.requireNonNull(embeddedChunks);
+        this.embeddingProvider = Objects.requireNonNull(embeddingProvider, "Embedding provider cannot be null");
+        this.embeddedChunks = Objects.requireNonNull(embeddedChunks, "Embedded chunks cannot be null");
     }
 
     @Override
     public List<SearchResult> search(SearchQuery searchQuery) {
         if (embeddedChunks.isEmpty()) {
-            return new ArrayList<>();
+            return List.of();
         }
 
-        // Create embedding for the search query
+        // Create vector embedding for the search query
         double[] queryEmbedding = embeddingProvider.createEmbedding(searchQuery.getText());
 
         // Calculate similarity score for each code chunk and add to results
