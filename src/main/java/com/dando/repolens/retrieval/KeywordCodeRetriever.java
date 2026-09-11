@@ -12,10 +12,14 @@ import java.util.Objects;
 // Searches code chunks and grades their relevance based on an input search query
 public class KeywordCodeRetriever implements CodeRetriever {
 
+    private static final int METHOD_NAME_SCORE = 3;
+    private static final int CLASS_NAME_SCORE = 2;
+    private static final int CONTENT_SCORE = 1;
+
     private final List<CodeChunk> chunks;
 
     public KeywordCodeRetriever(List<CodeChunk> chunks) {
-        this.chunks = new ArrayList<>(Objects.requireNonNull(chunks));
+        this.chunks = new ArrayList<>(Objects.requireNonNull(chunks, "Code chunks cannot be null"));
     }
 
     @Override
@@ -56,13 +60,13 @@ public class KeywordCodeRetriever implements CodeRetriever {
 
         for (String keyword : keywords) {
             if (methodName.contains(keyword)) {
-                score += 3;
+                score += METHOD_NAME_SCORE;
             }
             if (className.contains(keyword)) {
-                score += 2;
+                score += CLASS_NAME_SCORE;
             }
             if (content.contains(keyword)) {
-                score += 1;
+                score += CONTENT_SCORE;
             }
         }
 
