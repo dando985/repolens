@@ -31,7 +31,7 @@ public final class VectorSimilarity {
             secondMagnitudeSquared += secondVector[index] * secondVector[index];
         }
 
-        // Handle zero vectors to avoid dividing by zero
+        // Handle zero vectors to avoid dividing by zero (zero similarity)
         if (firstMagnitudeSquared == 0.0 || secondMagnitudeSquared == 0.0) {
             return 0.0;
         }
