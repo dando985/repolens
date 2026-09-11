@@ -19,7 +19,7 @@ public class KeywordCodeRetriever implements CodeRetriever {
     private final List<CodeChunk> chunks;
 
     public KeywordCodeRetriever(List<CodeChunk> chunks) {
-        this.chunks = new ArrayList<>(Objects.requireNonNull(chunks, "Code chunks cannot be null"));
+        this.chunks = List.copyOf(chunks);
     }
 
     @Override
