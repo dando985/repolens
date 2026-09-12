@@ -20,8 +20,13 @@ import java.util.Map;
 @RequestMapping("/api/repository")
 public class RepositoryController {
 
+    // Inject RepositoryScanner implementation to scan the repository for Java source files
     private final RepositoryScanner repositoryScanner;
+
+    // Use RepositoryAnalysisService to analyze the repository and find method chunks
     private final RepositoryAnalysisService analysisService;
+
+    // Defines configured repository path from application.properties file
     private final RepositoryProperties repositoryProperties;
 
     public RepositoryController(RepositoryScanner repositoryScanner, RepositoryAnalysisService analysisService, RepositoryProperties repositoryProperties) {
@@ -32,7 +37,7 @@ public class RepositoryController {
 
     @GetMapping("/scan")
     public Map<String, Object> scanRepository() throws IOException {
-        // Determine repository path
+        // Verify that the repository path is valid and exists
         Path repositoryPath = requireRepositoryPath();
 
         // Scan the repository for Java source files using RepositoryScanner service
@@ -49,8 +54,8 @@ public class RepositoryController {
     }
 
     @GetMapping("/methods")
-    public Map<String, Object> findMethods() throws IOException {
-        // Determine repository path
+    public Map<String, Object> listMethods() throws IOException {
+        // Verify that the repository path is valid and exists
         Path repositoryPath = requireRepositoryPath();
 
         // Use RepositoryAnalysisService to scan and chunk methods in the repository
