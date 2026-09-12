@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.IOException;
 
+// Global exception handler that catches specific exceptions thrown by the any REST controller and returns
+// consistent HTTP responses with error details.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
