@@ -1,11 +1,11 @@
 package com.dando.repolens.service;
 
-import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.EmbeddedCodeChunk;
 import com.dando.repolens.model.SearchQuery;
 import com.dando.repolens.model.SearchResult;
+import com.dando.repolens.retrieval.CodeRetriever;
 import com.dando.repolens.retrieval.KeywordCodeRetriever;
 import com.dando.repolens.retrieval.SemanticCodeRetriever;
 import org.springframework.stereotype.Service;
@@ -28,25 +28,30 @@ public class RepositorySearchService {
     }
 
     public List<SearchResult> keywordSearch(Path repositoryPath, String query, int limit) throws IOException {
-        List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
-
-        // Create a KeywordCodeRetriever with the list of code chunks
-        KeywordCodeRetriever retriever = new KeywordCodeRetriever(chunks);
-
         // Create a SearchQuery object with the query and limit
         SearchQuery searchQuery = new SearchQuery(query, limit);
+
+        // Retrieve all code chunks from the repository
+        List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
+
+        // Initialize the retriever with the list of code chunks
+        KeywordCodeRetriever retriever = new KeywordCodeRetriever(chunks);
 
         // Perform keyword search matching with the query and return the results
         return retriever.search(searchQuery);
     }
 
-    public List<SearchResult> semanticSearch(Path repositoryPath, String query, int limit) throws IOException, EmbeddingException {
-        List<EmbeddedCodeChunk> semanticIndex = semanticIndexService.getOrCreateIndex(repositoryPath);
-
-        SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
-
+    public List<SearchResult> semanticSearch(Path repositoryPath, String query, int limit) throws IOException {
+        // Create a SearchQuery object with the query and limit
         SearchQuery searchQuery = new SearchQuery(query, limit);
 
+        // Retrieve or create the semantic index for the repository
+        List<EmbeddedCodeChunk> semanticIndex = semanticIndexService.getOrCreateIndex(repositoryPath);
+
+        // Initialize the retriever with the embedding provider and the semantic index
+        SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
+
+        // Perform semantic search matching with the query and return the results
         return retriever.search(searchQuery);
     }
 
