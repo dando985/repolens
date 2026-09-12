@@ -24,6 +24,7 @@ public class HealthController {
 
     @GetMapping("/health/ollama")
     public Map<String, Object> ollamaHealth() {
+        // Perform a health check by creating an embedding for a test string
         double[] embedding = embeddingProvider.createEmbedding("RepoLens health check");
 
         return Map.of("status", "UP", "model", embeddingProvider.getModelName(), "dimensions", embedding.length);
