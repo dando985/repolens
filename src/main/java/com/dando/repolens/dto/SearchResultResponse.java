@@ -3,6 +3,7 @@ package com.dando.repolens.dto;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.SearchResult;
 
+// DTO to convert SearchResult to a response format that is JSON friendly
 public record SearchResultResponse(
         double score,
         String file,
