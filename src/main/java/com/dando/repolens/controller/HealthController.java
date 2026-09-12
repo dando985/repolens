@@ -1,6 +1,5 @@
 package com.dando.repolens.controller;
 
-import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,7 @@ public class HealthController {
     }
 
     @GetMapping("/health/ollama")
-    public Map<String, Object> ollamaHealth() throws EmbeddingException {
+    public Map<String, Object> ollamaHealth() {
         double[] embedding = embeddingProvider.createEmbedding("RepoLens health check");
 
         return Map.of("status", "UP", "model", embeddingProvider.getModelName(), "dimensions", embedding.length);
