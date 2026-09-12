@@ -1,7 +1,7 @@
 package com.dando.repolens.service;
 
-import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.chunking.CodeChunker;
+import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.JavaSourceFile;
 import com.dando.repolens.scanner.RepositoryScanner;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,6 @@ public class RepositoryAnalysisService {
             allChunks.addAll(fileChunks);
         }
 
-        return allChunks;
+        return List.copyOf(allChunks);
     }
 }
