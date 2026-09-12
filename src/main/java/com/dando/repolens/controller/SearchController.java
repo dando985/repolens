@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+// REST controller that provides endpoints for searching a Java repository using keyword and semantic search methods.
 @RestController
 @RequestMapping("/api/search")
 public class SearchController {
@@ -41,7 +42,7 @@ public class SearchController {
         }
 
         List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
-        List<SearchResultResponse> responseResults = results.stream().map(result -> SearchResultResponse.from(result)).toList();
+        List<SearchResultResponse> responseResults = results.stream().map(SearchResultResponse::from).toList();
 
         // Format response results as a DTO
         return new SearchResponse(query, responseResults.size(), responseResults);
@@ -59,7 +60,6 @@ public class SearchController {
         }
 
         List<SearchResult> results = searchService.semanticSearch(repositoryPath, query, limit);
-
         List<SearchResultResponse> responseResults = results.stream().map(SearchResultResponse::from).toList();
 
         return new SearchResponse(query, responseResults.size(), responseResults);
