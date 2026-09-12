@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+// Service that provides search functionality for code chunks in a repository, supporting both keyword-based and semantic searches.
+// Methods will retrieve code chunks from repository, and match them against the search query using either keyword matching or semantic similarity based on embeddings.
+// Results are returned as a list of SearchResult objects, which include the matched code chunk and its relevance score.
 @Service
 public class RepositorySearchService {
 
