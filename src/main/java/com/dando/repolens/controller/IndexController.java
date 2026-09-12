@@ -2,7 +2,6 @@ package com.dando.repolens.controller;
 
 import com.dando.repolens.config.RepositoryProperties;
 import com.dando.repolens.dto.SemanticIndexResponse;
-import com.dando.repolens.exception.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import com.dando.repolens.exception.RepositoryNotFoundException;
 import com.dando.repolens.model.EmbeddedCodeChunk;
@@ -31,7 +30,7 @@ public class IndexController {
     }
 
     @PostMapping("/semantic/rebuild")
-    public SemanticIndexResponse rebuildSemanticIndex() throws IOException, EmbeddingException {
+    public SemanticIndexResponse rebuildSemanticIndex() throws IOException {
         Path repositoryPath = repositoryProperties.resolvePath();
 
         if (!Files.isDirectory(repositoryPath)) {
