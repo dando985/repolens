@@ -1,5 +1,6 @@
 package com.dando.repolens.embedding;
 
+import com.dando.repolens.exception.EmbeddingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

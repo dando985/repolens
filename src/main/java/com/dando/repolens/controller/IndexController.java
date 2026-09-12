@@ -2,7 +2,7 @@ package com.dando.repolens.controller;
 
 import com.dando.repolens.config.RepositoryProperties;
 import com.dando.repolens.dto.SemanticIndexResponse;
-import com.dando.repolens.embedding.EmbeddingException;
+import com.dando.repolens.exception.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import com.dando.repolens.exception.RepositoryNotFoundException;
 import com.dando.repolens.model.EmbeddedCodeChunk;

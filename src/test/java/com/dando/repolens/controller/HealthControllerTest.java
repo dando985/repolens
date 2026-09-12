@@ -1,6 +1,6 @@
 package com.dando.repolens.controller;
 
-import com.dando.repolens.embedding.EmbeddingException;
+import com.dando.repolens.exception.EmbeddingException;
 import com.dando.repolens.embedding.EmbeddingProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

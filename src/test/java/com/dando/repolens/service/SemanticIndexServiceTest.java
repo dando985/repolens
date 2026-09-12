@@ -1,7 +1,7 @@
 package com.dando.repolens.service;
 
 import com.dando.repolens.embedding.CodeEmbeddingIndexer;
-import com.dando.repolens.embedding.EmbeddingException;
+import com.dando.repolens.exception.EmbeddingException;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.EmbeddedCodeChunk;
 import org.junit.jupiter.api.Test;

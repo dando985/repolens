@@ -1,7 +1,6 @@
 package com.dando.repolens.exception;
 
 import com.dando.repolens.dto.ApiErrorResponse;
-import com.dando.repolens.embedding.EmbeddingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
