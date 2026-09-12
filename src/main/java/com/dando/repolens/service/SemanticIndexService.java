@@ -1,7 +1,6 @@
 package com.dando.repolens.service;
 
 import com.dando.repolens.embedding.CodeEmbeddingIndexer;
-import com.dando.repolens.embedding.EmbeddingException;
 import com.dando.repolens.model.CodeChunk;
 import com.dando.repolens.model.EmbeddedCodeChunk;
 import org.slf4j.Logger;
@@ -11,16 +10,16 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SemanticIndexService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SemanticIndexService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SemanticIndexService.class);
 
     private final RepositoryAnalysisService analysisService;
     private final CodeEmbeddingIndexer embeddingIndexer;
 
-    private boolean initialized;
     private Path indexedRepository;
     private List<EmbeddedCodeChunk> semanticIndex = List.of();
 
@@ -29,13 +28,11 @@ public class SemanticIndexService {
         this.embeddingIndexer = embeddingIndexer;
     }
 
-    public synchronized List<EmbeddedCodeChunk> getOrCreateIndex(Path repositoryPath) throws IOException, EmbeddingException {
-        Path normalizedPath = repositoryPath.toAbsolutePath().normalize();
+    public synchronized List<EmbeddedCodeChunk> getOrCreateIndex(Path repositoryPath) throws IOException {
+        Path normalizedPath = Objects.requireNonNull(repositoryPath, "Repository path cannot be null.").toAbsolutePath().normalize();
 
-        boolean correctRepository = normalizedPath.equals(indexedRepository);
-
-        if (initialized && correctRepository) {
-            logger.info("Reusing semantic index with {} chunks", semanticIndex.size());
+        if (normalizedPath.equals(indexedRepository)) {
+            LOGGER.info("Reusing semantic index with {} chunks", semanticIndex.size());
 
             return semanticIndex;
         }
@@ -43,24 +40,24 @@ public class SemanticIndexService {
         return buildIndex(normalizedPath);
     }
 
-    public synchronized List<EmbeddedCodeChunk> rebuildIndex(Path repositoryPath) throws IOException, EmbeddingException {
-        Path normalizedPath = repositoryPath.toAbsolutePath().normalize();
+    // Rebuilds the semantic index for the given repository path, even if it has already been indexed
+    public synchronized List<EmbeddedCodeChunk> rebuildIndex(Path repositoryPath) throws IOException {
+        Path normalizedPath = Objects.requireNonNull(repositoryPath, "Repository path cannot be null.").toAbsolutePath().normalize();
 
         return buildIndex(normalizedPath);
     }
 
-    private List<EmbeddedCodeChunk> buildIndex(Path repositoryPath) throws IOException, EmbeddingException {
-        logger.info("Building semantic index for {}", repositoryPath);
+    private List<EmbeddedCodeChunk> buildIndex(Path repositoryPath) throws IOException {
+        LOGGER.info("Building semantic index for {}", repositoryPath);
 
-        List<CodeChunk> chunks = analysisService.findMethodChunks(repositoryPath);
+        List<CodeChunk> allChunks = analysisService.findMethodChunks(repositoryPath);
 
-        List<EmbeddedCodeChunk> newIndex = embeddingIndexer.createIndex(chunks);
+        List<EmbeddedCodeChunk> newIndex = embeddingIndexer.createIndex(allChunks);
 
         semanticIndex = List.copyOf(newIndex);
         indexedRepository = repositoryPath;
-        initialized = true;
 
-        logger.info("Semantic index created with {} chunks", semanticIndex.size());
+        LOGGER.info("Semantic index created with {} chunks", semanticIndex.size());
 
         return semanticIndex;
     }
