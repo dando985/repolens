@@ -44,7 +44,6 @@ public class SearchController {
         List<SearchResult> results = searchService.keywordSearch(repositoryPath, query, limit);
         List<SearchResultResponse> responseResults = results.stream().map(SearchResultResponse::from).toList();
 
-        // Format response results as a DTO
         return new SearchResponse(query, responseResults.size(), responseResults);
 
     }
