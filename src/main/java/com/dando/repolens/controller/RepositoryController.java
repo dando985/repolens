@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+// REST controller that provides endpoints to scan a Java repository for source files and analyze methods within those files.
 @RestController
 @RequestMapping("/api/repository")
 public class RepositoryController {
