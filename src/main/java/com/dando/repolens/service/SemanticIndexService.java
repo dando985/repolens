@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+// Service that manages the semantic index of code chunks for a given repository.
+// It uses the RepositoryAnalysisService to find method chunks and the CodeEmbeddingIndexer to create embeddings for those chunks.
+// The service caches the index for a repository and rebuilds it only when necessary.
 @Service
 public class SemanticIndexService {
 
