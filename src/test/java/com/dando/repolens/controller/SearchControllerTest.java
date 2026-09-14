@@ -49,8 +49,7 @@ class SearchControllerTest {
 
         // Perform a GET request to the /api/search/keyword endpoint with sample SearchResult data
         mockMvc.perform(get("/api/search/keyword")
-                .param("query", "add")
-                .param("limit", "5"))
+                .param("query", "add"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.query").value("add"))
                 .andExpect(jsonPath("$.resultCount").value(1))
