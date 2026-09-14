@@ -43,10 +43,7 @@ class CodeChunkerTest {
         assertEquals("add", firstChunk.getMethodName());
         assertEquals(3, firstChunk.getStartLine());
         assertEquals(5, firstChunk.getEndLine());
-        assertTrue(
-                firstChunk.getContent()
-                        .contains("return first + second;")
-        );
+        assertTrue(firstChunk.getContent().contains("return first + second;"));
 
         // Check that second chunk corresponds to subtract method
         CodeChunk secondChunk = chunks.get(1);
@@ -55,9 +52,6 @@ class CodeChunkerTest {
         assertEquals("subtract", secondChunk.getMethodName());
         assertEquals(7, secondChunk.getStartLine());
         assertEquals(9, secondChunk.getEndLine());
-        assertTrue(
-                secondChunk.getContent()
-                        .contains("return first - second;")
-        );
+        assertTrue(secondChunk.getContent().contains("return first - second;"));
     }
 }
