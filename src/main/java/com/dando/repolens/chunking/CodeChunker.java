@@ -19,7 +19,7 @@ import java.util.List;
 public class CodeChunker {
 
     // Creates a list of code chunks from a source file
-    public List<CodeChunk> createChunks(JavaSourceFile sourceFile) throws IOException {
+    public List<CodeChunk> createChunks(JavaSourceFile sourceFile) {
         List<CodeChunk> chunks = new ArrayList<>();
 
         // Initialize abstract syntax tree from source file content
