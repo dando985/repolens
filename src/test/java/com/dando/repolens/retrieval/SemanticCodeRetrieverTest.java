@@ -34,6 +34,7 @@ class SemanticCodeRetrieverTest {
 
         SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
+        // Manually set vector embedding for query
         when(embeddingProvider.createEmbedding("find a user")).thenReturn(new double[]{1.0, 0.0});
 
         // Set query with high max search results limit
@@ -67,6 +68,7 @@ class SemanticCodeRetrieverTest {
 
         SemanticCodeRetriever retriever = new SemanticCodeRetriever(embeddingProvider, semanticIndex);
 
+        // Manually set vector embedding for query
         when(embeddingProvider.createEmbedding("find a user")).thenReturn(new double[]{1.0, 0.0});
 
         // Set query with limited max search results to 2
